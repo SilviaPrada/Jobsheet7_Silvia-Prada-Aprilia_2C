@@ -52,4 +52,6 @@
     </tr>
     @endforeach
 </table>
+<br>
+{{ $mahasiswa->links('pagination::bootstrap-4') }}
 @endsection
