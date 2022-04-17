@@ -36,6 +36,18 @@
                 <label for="Jurusan">Jurusan</label>
                 <input type="Jurusan" name="Jurusan" class="form-control" id="Jurusan" ariadescribedby="Jurusan" >
             </div>
+            <div class="form-group">
+                <label for="Email">E-mail</label>
+                <input type="text" name="Email" class="form-control" id="Email" ariadescribedby="Email" >
+            </div>
+            <div class="form-group">
+                <label for="Alamat">Alamat</label>
+                <input type="Alamat" name="Alamat" class="form-control" id="Alamat" ariadescribedby="Alamat" >
+            </div>
+            <div class="form-group">
+                <label for="Tanggal_Lahir">Tanggal Lahir</label>
+                <input type="date" name="Tanggal_Lahir" class="form-control" id="Tanggal_Lahir" ariadescribedby="Tanggal_Lahir" >
+            </div>
         <button type="submit" class="btn btn-primary">Submit</button>
         </form>
         </div>
