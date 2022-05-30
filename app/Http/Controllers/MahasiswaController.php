@@ -135,4 +135,9 @@ class MahasiswaController extends Controller
             return view('mahasiswa.index', compact('mahasiswa'));
             with('i', (request()->input('page', 1) - 1) * 5);
     }
+    public function khs($Nim)
+    {
+        $data = Mahasiswa::where('nim', $Nim)->with(['kelas', 'khs.mataKuliah'])->first();
+        return view('mahasiswa.khs', compact('data'));
+    }
 };
