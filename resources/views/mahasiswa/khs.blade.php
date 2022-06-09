@@ -12,12 +12,18 @@
 </div>
 
 <br><br>
-<div>
-    <b>Nama : </b> {{$data->nama}} <br>
-    <b>NIM : </b>  {{$data->nim}} <br>
-    <b>Kelas : </b>{{$data->kelas->nama_kelas}} <br>
-</div>
 
+<div class="row" style="margin:0px 0px 0px 10px">
+    <div>
+        <b>Nama : </b> {{$data->nama}} <br>
+        <b>NIM : </b>  {{$data->nim}} <br>
+        <b>Kelas : </b>{{$data->kelas->nama_kelas}} <br>
+    </div>
+    <div style="margin:0px 0px 0px 800px;">
+        <a class="btn btn-success" href="{{ route('mahasiswa.cetak_khs', $data->nim) }}"> Cetak KHS</a>
+    </div>
+</div>
+    
 <br>
 <table class="table table-bordered">
     <thead>

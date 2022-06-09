@@ -6,6 +6,7 @@ use App\Models\Mahasiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Kelas;
+use PDF;
 
 class MahasiswaController extends Controller
 {
@@ -34,34 +35,27 @@ class MahasiswaController extends Controller
     }
     public function store(Request $request)
     { 
-        //melakukan validasi data
-        $request->validate([
-            'Nim' => 'required',
-            'Nama' => 'required',
-            'Kelas' => 'required',
-            'Jurusan' => 'required',
-            'Email' => 'required',
-            'Alamat' => 'required',
-            'Tanggal_Lahir' => 'required',
-        ]);
-
         $mahasiswa = new Mahasiswa;
-        $mahasiswa->nim = $request->get('Nim');
-        $mahasiswa->nama = $request->get('Nama');
-        $mahasiswa->jurusan = $request->get('Jurusan');
-        $mahasiswa->email = $request->get('Email');
-        $mahasiswa->alamat = $request->get('Alamat');
-        $mahasiswa->tanggal_lahir = $request->get('Tanggal_Lahir');
+        $mahasiswa->nim = $request->Nim;
+        $mahasiswa->nama = $request->Nama;
+        $mahasiswa->jurusan = $request->Jurusan;
+        $mahasiswa->email = $request->Email;
+        $mahasiswa->alamat = $request->Alamat;
+        $mahasiswa->tanggal_lahir = $request->Tanggal_Lahir;
+
+        if ($request->file('foto')) {
+            $image_name = $request->file('foto')->store('images', 'public');
+            $mahasiswa->foto = $image_name;
+        }
+
         $mahasiswa->save();
 
         $kelas = new Kelas;
-        $kelas->id = $request->get('Kelas');
+        $kelas->id = $request->Kelas;
 
-        //fungsi eloquent untuk menambahkan data dengan relasi belongsTo
         $mahasiswa->kelas()->associate($kelas);
         $mahasiswa->save();
 
-        //jika data berhasil ditambahkan, akan kembali ke halaman utama
         return redirect()->route('mahasiswa.index')
             ->with('success', 'Mahasiswa Berhasil Ditambahkan');
 
@@ -83,35 +77,30 @@ class MahasiswaController extends Controller
     }
     public function update(Request $request, $Nim)
     {
-        //melakukan validasi data
-        $request->validate([
-            'Nim' => 'required',
-            'Nama' => 'required',
-            'Kelas' => 'required',
-            'Jurusan' => 'required',
-            'Email' => 'required',
-            'Alamat' => 'required',
-            'Tanggal_Lahir' => 'required',
-        ]);
-
         $mahasiswa = Mahasiswa::with('kelas')->where('nim', $Nim)->first();
-        $mahasiswa->nim = $request->get('Nim');
-        $mahasiswa->nama = $request->get('Nama');
-        $mahasiswa->jurusan = $request->get('Jurusan');
-        $mahasiswa->email = $request->get('Email');
-        $mahasiswa->alamat = $request->get('Alamat');
-        $mahasiswa->tanggal_lahir = $request->get('Tanggal_Lahir');
+        $mahasiswa->nim = $request->Nim;
+        $mahasiswa->nama = $request->Nama;
+        $mahasiswa->jurusan = $request->Jurusan;
+        $mahasiswa->email = $request->Email;
+        $mahasiswa->alamat = $request->Alamat;
+        $mahasiswa->tanggal_lahir = $request->Tanggal_Lahir;
         $mahasiswa->save();
 
-        $kelas = new Kelas;
-        $kelas->id = $request->get('Kelas');
+        if ($request->file('foto')) {
+            if ($mahasiswa->foto && file_exists(storage_path('app/public/' . $mahasiswa->foto))) {
+                Storage::delete('public/' . $mahasiswa->foto);
+            }
+            $mahasiswa->foto    = $request->file('foto')->store('images', 'public');
+        }
 
-        //fungsi eloquent untuk menambahkan data dengan relasi belongsTo
+        $kelas = new Kelas;
+        $kelas->id = $request->Kelas;
+
         $mahasiswa->kelas()->associate($kelas);
         $mahasiswa->save();
 
-        //jika data berhasil diupdate, akan kembali ke halaman utama
-        return redirect()->route('mahasiswa.index')
+        return redirect()
+            ->route('mahasiswa.index')
             ->with('success', 'Mahasiswa Berhasil Diupdate');
     }
     public function destroy( $Nim)
@@ -139,5 +128,11 @@ class MahasiswaController extends Controller
     {
         $data = Mahasiswa::where('nim', $Nim)->with(['kelas', 'khs.mataKuliah'])->first();
         return view('mahasiswa.khs', compact('data'));
+    }
+    public function cetak_khs($nim)
+    {
+        $data = Mahasiswa::where('nim', $nim)->with(['kelas', 'khs.mataKuliah'])->first();
+        $pdf = PDF::loadview('mahasiswa.cetak_khs', compact('data'));
+        return $pdf->stream();
     }
 };
