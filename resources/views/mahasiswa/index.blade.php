@@ -37,7 +37,6 @@
         <th>E-mail</th>
         <th>Alamat</th>
         <th>Tanggal Lahir</th>
-        <th>Foto</th>
         <th width="280px">Action</th>
     </tr>
     @foreach ($mahasiswa as $mhs)
@@ -47,7 +46,6 @@
         <td>{{ $mhs ->nama }}</td>
         <td>{{ $mhs ->kelas->nama_kelas }}</td>
         <td>{{ $mhs ->jurusan }}</td>
-        <td><img width="50px" src="{{asset('storage/'.$mhs->foto)}}"></td>
         <td>{{ $mhs ->email }}</td>
         <td>{{ $mhs ->alamat }}</td>
         <td>{{ $mhs ->tanggal_lahir }}</td>

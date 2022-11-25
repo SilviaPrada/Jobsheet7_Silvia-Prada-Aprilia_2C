@@ -88,7 +88,7 @@ class MahasiswaController extends Controller
 
         if ($request->file('foto')) {
             if ($mahasiswa->foto && file_exists(storage_path('app/public/' . $mahasiswa->foto))) {
-                Storage::delete('public/' . $mahasiswa->foto);
+                Mahasiswa::destroy('public/' . $mahasiswa->foto);
             }
             $mahasiswa->foto    = $request->file('foto')->store('images', 'public');
         }

@@ -1,0 +1,47 @@
+version: "3.7"
+services:
+  app:
+    build:
+      args:
+        user: silvia
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: siakad
+    container_name: siakad-app
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    networks:
+      - siakad
+
+  db:
+    image: mysql:8.0
+    container_name: siakad-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: siakad
+      MYSQL_ROOT_PASSWORD: silvia
+      MYSQL_PASSWORD: silvia
+      MYSQL_USER: silvia
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - siakad
+
+  nginx:
+    image: nginx:alpine
+    container_name: siakad-nginx
+    restart: unless-stopped
+    ports:
+      - 8000:80
+    volumes:
+      - ./:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d/
+    networks:
+      - siakad
+
+networks:
+  siakad:
+    driver: bridge
